@@ -26,5 +26,9 @@ class InvalidEnvironmentError(BaseError):
     """ERROR: Path is not a valid environment: {path}"""
 
 
+class InvalidPathError(BaseError):
+    """ERROR: Path is invalid: {path}"""
+
+
 class PathNotFoundError(BaseError):
     """ERROR: Could not find path: {path}"""
