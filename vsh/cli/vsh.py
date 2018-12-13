@@ -39,7 +39,12 @@ def vsh(ctx, copy, create_only, dry_run, ephemeral, force, interactive, shell_co
         subprocess.run('source vsh', shell=True)
         sys.exit(0)
 
-    name, path = api.validate_venv_name_and_path(venv_name=name, venv_path=path)
+    try:
+        name, path = api.validate_venv_name_and_path(venv_name=name, venv_path=path)
+    except NameError:
+        terminal.echo(vsh.get_help(ctx))
+        terminal.echo(f'\n{terminal.red("Error")}: Missing {terminal.blue("name")} or {terminal.blue("path")}.\n')
+        exit()
     verbose = verbose or 0
     return_code = 0
     if version:
