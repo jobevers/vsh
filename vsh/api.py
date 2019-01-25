@@ -192,7 +192,7 @@ def enter(path, command=None, verbose=None):
     venv_name = click.style(Path(path).name, fg='green')
 
     # Setup the environment scripts
-    vshell_config_commands = '; '.join(f'source {filepath}' for filepath in find_vsh_config_files(path))
+    vshell_config_commands = '; '.join(f'. {filepath}' for filepath in find_vsh_config_files(path))
     if not isinstance(command, str):
         command = " ".join(command)
     if vshell_config_commands:
