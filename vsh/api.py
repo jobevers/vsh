@@ -198,9 +198,10 @@ def enter(path, command=None, verbose=None):
     if vshell_config_commands:
         command = f'{vshell_config_commands}; {command}'
     cmd_display = click.style(command, fg='green')
+    interactive = '-i' if is_tty() else ''
     if Path(shell).name in ['bash', 'zsh']:
-        command = f'{shell} -i -c \"{command}\"'
-        cmd_display = f'{shell} -i -c \"{cmd_display}\"'
+        command = f'{shell} {interactive} -c \"{command}\"'
+        cmd_display = f'{shell} {interactive} -c \"{cmd_display}\"'
 
     support.echo(click.style(f'Running command in "', fg='blue') + venv_name + click.style(f'": ', fg='blue') + cmd_display, verbose=max(verbose - 1, 0))
 
@@ -210,6 +211,11 @@ def enter(path, command=None, verbose=None):
     rc = click.style(str(return_code), fg=rc_color)
     support.echo(click.style('Command return code: ', fg='blue') + rc, verbose=verbose)
     return return_code
+
+
+def is_tty():
+    cp = subprocess.run(['tty', '-s'])
+    return cp.returncode == 0
 
 
 def find_vsh_config_files(venv_path=None):
