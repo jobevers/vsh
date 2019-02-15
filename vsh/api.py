@@ -194,16 +194,14 @@ def enter(path, command=None, verbose=None):
     # Setup the environment scripts
     vshell_config_commands = '; '.join(f'source {filepath}' for filepath in find_vsh_config_files(path))
     if not isinstance(command, str):
-        command = " ".join(command)
+        command = "'" + "' '".join(command) + "'"
     if vshell_config_commands:
         command = f'{vshell_config_commands}; {command}'
     cmd_display = click.style(command, fg='green')
     if Path(shell).name in ['bash', 'zsh']:
         command = f'{shell} -i -c \"{command}\"'
         cmd_display = f'{shell} -i -c \"{cmd_display}\"'
-
     support.echo(click.style(f'Running command in "', fg='blue') + venv_name + click.style(f'": ', fg='blue') + cmd_display, verbose=max(verbose - 1, 0))
-
     # Activate and run
     return_code = subprocess.run(command, shell=True, env=env, universal_newlines=True)
     rc_color = 'green' if return_code == 0 else 'red'
