@@ -194,7 +194,7 @@ def enter(path, command=None, verbose=None):
     # Setup the environment scripts
     vshell_config_commands = '; '.join(f'source {filepath}' for filepath in find_vsh_config_files(path))
     if not isinstance(command, str):
-        command = "'" + "' '".join(command) + "'"
+        command = " ".join(map(shlex.quote, command))
     if vshell_config_commands:
         command = f'{vshell_config_commands}; {command}'
     cmd_display = click.style(command, fg='green')
@@ -203,6 +203,7 @@ def enter(path, command=None, verbose=None):
         cmd_display = f'{shell} -i -c \"{cmd_display}\"'
     support.echo(click.style(f'Running command in "', fg='blue') + venv_name + click.style(f'": ', fg='blue') + cmd_display, verbose=max(verbose - 1, 0))
     # Activate and run
+    # I don't know how to escape the command, run it in the shell and allow for variable expansion and quotes within the original command
     return_code = subprocess.run(command, shell=True, env=env, universal_newlines=True)
     rc_color = 'green' if return_code == 0 else 'red'
     rc = click.style(str(return_code), fg=rc_color)
